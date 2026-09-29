@@ -33,25 +33,53 @@ function cssVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
+const axisTime = new Intl.DateTimeFormat(undefined, {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+});
+
+// Single row HH:MM:SS labels; the default time axis adds a second date row and crowds ticks at narrow widths.
+const formatTimeTicks = (_u: uPlot, ticks: number[]) => ticks.map((t) => axisTime.format(t * 1000));
+
 function buildOptions(width: number, range: { current: readonly [number, number] }): uPlot.Options {
   const grid = { stroke: cssVar('--chart-grid'), width: 1 };
-  const axis = { stroke: cssVar('--text-muted'), grid, ticks: grid };
+  const font = '11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+  const axis = { stroke: cssVar('--text-faint'), grid, ticks: { show: false }, font };
+  const fillTop = cssVar('--chart-fill-top');
+  const fillBottom = cssVar('--chart-fill-bottom');
+  let gradient: CanvasGradient | null = null;
+
+  // Rebuilt only when the plotting area changes size, never on data updates.
+  const buildGradient = (u: uPlot) => {
+    const { top, height } = u.bbox;
+    if (height <= 0) return;
+    gradient = u.ctx.createLinearGradient(0, top, 0, top + height);
+    gradient.addColorStop(0, fillTop);
+    gradient.addColorStop(1, fillBottom);
+  };
+
   return {
     width,
     height: CHART_HEIGHT,
     legend: { show: false },
-    cursor: { drag: { x: false, y: false } },
+    cursor: { drag: { x: false, y: false }, points: { show: false } },
+    hooks: { ready: [buildGradient], setSize: [buildGradient] },
     scales: {
       x: { time: true, range: () => [range.current[0], range.current[1]] },
       y: { range: (_u, _min, max) => [0, Math.max(100, Math.ceil(max * 1.1))] },
     },
-    axes: [axis, { ...axis, size: 72, values: (_u, ticks) => ticks.map((t) => `${formatInteger(t)} ms`) }],
+    axes: [
+      { ...axis, space: 96, values: formatTimeTicks },
+      { ...axis, size: 72, values: (_u, ticks) => ticks.map((t) => `${formatInteger(t)} ms`) },
+    ],
     series: [
       {},
       {
         label: 'Latency',
         stroke: cssVar('--chart-line'),
-        fill: cssVar('--chart-fill'),
+        fill: () => gradient ?? fillTop,
         width: 1.5,
         points: { show: false },
       },

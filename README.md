@@ -53,7 +53,7 @@ Paths are relative to `src/` unless they are repo root files.
 | Dedicated stream service and hook, no connection logic in the UI | `services/streamClient.ts`, `services/transport.ts`, `services/mockTransport.ts`, `services/wsTransport.ts`, `hooks/useLiveStream.ts` |
 | Explicit connecting, live, paused, reconnecting and error states | `types/event.ts`, `services/streamClient.ts`, `components/ConnectionBar.tsx` |
 | Reconnect with backoff, never silently frozen | `lib/backoff.ts`, `services/streamClient.ts` (stale detection) |
-| KPI cards from live data | `components/KpiCards.tsx`, `components/KpiCard.tsx`, `lib/rollingStats.ts` |
+| KPI cards from live data | `components/KpiCards.tsx`, `components/KpiCard.tsx`, `components/SeverityMix.tsx`, `lib/rollingStats.ts` |
 | Live time series chart | `components/LiveChart.tsx`, `lib/lttb.ts`, `lib/timeSearch.ts` |
 | Live events list | `components/EventsList.tsx`, `components/EventRow.tsx` |
 | Pause and resume, filter and time window, correct when paused | `components/Controls.tsx`, `store/liveStore.ts` |
@@ -119,6 +119,7 @@ useLiveSelector(selector)  (useSyncExternalStore)
 - **Bounded memory.** Events live in a ring buffer sized by the settings panel. Chart points live in a separate ring of compact `{ ts, metric }` pairs (20000), so the chart can show more history than the list at a fraction of the memory.
 - **Backpressure.** The queue between ingest and flush is itself a ring buffer (2000). If a burst outruns the flush, the oldest pending events are dropped and counted in the UI. It drains on the flush timer as well as the frame, so a throttled frame cannot overflow it. Stats are updated on ingest, so KPIs stay exact even when the list drops events.
 - **Canvas chart.** uPlot is created once in a ref, updated with `setData`, resized with `ResizeObserver` and destroyed on unmount. The window start is found by binary search, then LTTB reduces the series to 500 points. The canvas never draws more than that.
+- **Cheap visuals.** Decorative motion (the live dot ping, the spinner) animates only `transform` and `opacity`, is never tied to data ticks and stops under `prefers-reduced-motion`. The chart's gradient fill is built in a uPlot `setSize` hook, so it is recreated on resize, not on every data update. The page glow is a static background, and there is no `backdrop-filter`.
 - **Virtualized list.** `@tanstack/react-virtual` with fixed row height, newest first and stable keys (event id). Only visible rows plus a small overscan are in the DOM.
 - **Hidden tab.** While the tab is hidden, flushes only drain into the buffers and skip rendering. On `visibilitychange` the latest state renders at once.
 - **Paused.** The connection and stats keep running in the background. The visible snapshot is frozen, and a live "N new events while paused" counter shows what is waiting. Resume applies the latest state immediately.

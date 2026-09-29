@@ -13,13 +13,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: var(--radius-md);
   background: var(--surface);
 }
 
 .chart .u-legend {
   display: none;
-}
-
-.chart .u-axis {
-  color: var(--text-muted);
 }
