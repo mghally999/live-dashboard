@@ -250,9 +250,10 @@ export class LiveStore {
     const wait = Math.max(0, this.lastFlushAt + this.settings.flushMs - this.now());
     this.flushTimer = setTimeout(() => {
       this.flushTimer = null;
+      // Draining here as well as in the frame means a delayed or throttled frame cannot overflow the queue.
+      this.drain();
       if (this.isHidden()) {
-        // Nothing is painted while hidden: keep ingesting so the queue does not overflow, render on return.
-        this.drain();
+        // Nothing is painted while hidden: keep ingesting, render on return.
         this.lastFlushAt = this.now();
         return;
       }

@@ -45,7 +45,7 @@ function buildOptions(width: number, range: { current: readonly [number, number]
       x: { time: true, range: () => [range.current[0], range.current[1]] },
       y: { range: (_u, _min, max) => [0, Math.max(100, Math.ceil(max * 1.1))] },
     },
-    axes: [axis, { ...axis, size: 56, values: (_u, ticks) => ticks.map((t) => `${t} ms`) }],
+    axes: [axis, { ...axis, size: 72, values: (_u, ticks) => ticks.map((t) => `${formatInteger(t)} ms`) }],
     series: [
       {},
       {
