@@ -139,13 +139,18 @@ Method, to reproduce:
 4. Chrome Performance panel: record 10 seconds with 4x CPU throttling. Look at the longest task, scripting time per flush and frame rate while scrolling the events list.
 5. Memory panel: take heap snapshots at 1 and 5 minutes. Heap should plateau once the buffers are full.
 
-Measurements (fill in from your machine):
+### Stress run results
 
-| Scenario (500 msg/s) | Commits per second | Longest task (ms) | Scripting per flush (ms) | FPS while scrolling | Heap after 5 min (MB) |
-| --- | --- | --- | --- | --- | --- |
-| Throttle 250 ms, buffer 5000 | | | | | |
-| Throttle 100 ms, buffer 20000 | | | | | |
-| Throttle 1000 ms, buffer 500 | | | | | |
+I drove the dev server in headless Chrome (1400x1000), raised the stream rate to 1000 msg/s from the settings panel, and let it run for about 5 seconds with the default 250 ms throttle and 5000 event buffer. I then paused, resumed and searched. The readings come from the connection bar and the page console.
+
+| Build | Measured rate | Dropped | Console errors | `<img>` elements from hostile payloads |
+| --- | --- | --- | --- | --- |
+| Before: queue drained only on `requestAnimationFrame` | about 1,433 msg/s | 1,868 | 0 | 0 |
+| After: queue also drained on the flush timer | about 984 msg/s | 0 | 0 | 0 |
+
+Before the fix, the pending queue only drained inside `requestAnimationFrame`. Headless Chrome throttled frames, so bursts outran the 2000 item queue and the oldest events were dropped. Draining on the flush timer as well bounds the queue by the throttle interval rather than the frame rate. The fix brought drops to 0 at the same load. In both runs the XSS payloads in the stream rendered as literal text.
+
+This was a short run on a dev build, so it shows correctness under load, not timing. Commit rates, long tasks and heap growth still need the production profiling method above.
 
 ## Tradeoffs
 
