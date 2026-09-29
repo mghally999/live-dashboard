@@ -7,9 +7,9 @@ import { WsTransport, type TokenGetter } from '../services/wsTransport.ts';
 import type { LiveStore } from '../store/liveStore.ts';
 
 export interface LiveStreamActions {
-  pause(): void;
-  resume(): void;
-  retry(): void;
+  readonly pause: () => void;
+  readonly resume: () => void;
+  readonly retry: () => void;
 }
 
 export interface LiveStreamOptions {
