@@ -15,6 +15,7 @@ I focused on two things: rendering cost that does not grow with message rate, an
 ## How to run
 
 Requires Node 22.22+ or 24.15+ (24 LTS recommended). The test tooling (Vitest, jsdom) sets that floor.
+With nvm, run `nvm use` to pick up the version from `.nvmrc`.
 
 ```bash
 npm install
