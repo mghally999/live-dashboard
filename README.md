@@ -14,7 +14,7 @@ I focused on two things: rendering cost that does not grow with message rate, an
 
 ## How to run
 
-Requires Node 20.19 or newer.
+Requires Node 22.22+ or 24.15+ (24 LTS recommended). The test tooling (Vitest, jsdom) sets that floor.
 
 ```bash
 npm install
@@ -40,6 +40,41 @@ Other scripts: `npm run lint`, `npm run typecheck`, `npm run preview`.
 | Buffer size | 500 to 20000 events | 5000 |
 | Update throttle | 100 to 1000 ms | 250 |
 | Stream rate (simulated stream) | 1 to 1000 msg/s | 50 |
+
+## Brief coverage
+
+Paths are relative to `src/` unless they are repo root files.
+
+| Brief requirement | Where I implemented it |
+| --- | --- |
+| React 18+, TypeScript, Vite, function components and hooks only | `package.json`, `tsconfig.app.json` (strict), all of `components/`. No class components: `components/ErrorBoundary.tsx` wraps `react-error-boundary` |
+| Reusable typed components, hooks, derived state, side effects | `components/`, `hooks/useLiveSelector.ts`, `hooks/useLiveStream.ts`, `hooks/useDebouncedValue.ts` |
+| Dedicated stream service and hook, no connection logic in the UI | `services/streamClient.ts`, `services/transport.ts`, `services/mockTransport.ts`, `services/wsTransport.ts`, `hooks/useLiveStream.ts` |
+| Explicit connecting, live, paused, reconnecting and error states | `types/event.ts`, `services/streamClient.ts`, `components/ConnectionBar.tsx` |
+| Reconnect with backoff, never silently frozen | `lib/backoff.ts`, `services/streamClient.ts` (stale detection) |
+| KPI cards from live data | `components/KpiCards.tsx`, `components/KpiCard.tsx`, `lib/rollingStats.ts` |
+| Live time series chart | `components/LiveChart.tsx`, `lib/lttb.ts`, `lib/timeSearch.ts` |
+| Live events list | `components/EventsList.tsx`, `components/EventRow.tsx` |
+| Pause and resume, filter and time window, correct when paused | `components/Controls.tsx`, `store/liveStore.ts` |
+| Batch or throttle updates | `store/liveStore.ts` |
+| No re-render storms | `hooks/useLiveSelector.ts`, `React.memo` on every widget, `App.tsx` holds no live data |
+| Bounded memory | `lib/ringBuffer.ts`, `store/liveStore.ts` |
+| Virtualized events list | `components/EventsList.tsx` |
+| Validate and shape every message | `utils/validate.ts`, `services/streamClient.ts` |
+| XSS safe rendering, no `dangerouslySetInnerHTML` | `components/EventRow.tsx`, `eslint.config.js`, `components/EventsList.test.tsx` |
+| No secrets in the client, safe token handling | `services/wsTransport.ts`, `hooks/useLiveStream.ts`, `.env.example`, `.gitignore` |
+| Resilient against floods and flapping connections | `store/liveStore.ts` (bounded queue), `services/streamClient.ts`, `lib/backoff.ts` |
+| No sensitive detail in errors or logs | `utils/logger.ts`, `components/ConnectionBar.tsx`, `components/ErrorBoundary.tsx` |
+| Responsive UI with loading, error and empty states | `styles/`, `components/Loading.tsx`, `components/EmptyState.tsx`, `components/ErrorBoundary.tsx` |
+| Business logic separated from presentation | `lib/`, `store/`, `services/` and `utils/` have no React imports |
+| Edge cases: drops, empty feed, malformed data, pause, bursts | See [Edge cases handled](#edge-cases-handled) |
+| No hardcoded data as the source | `services/mockTransport.ts` emits a live stream of raw JSON frames |
+| Justified third party libraries | `uplot`: canvas chart updated with `setData`, no React re-render per point. `@tanstack/react-virtual`: headless virtualization that fits my markup. `react-error-boundary`: React has no hook based boundary API |
+| README with install and run instructions | [How to run](#how-to-run), [Configuration](#configuration) |
+| Bonus: automated tests | `*.test.ts(x)` beside the code under test, `.github/workflows/ci.yml` |
+| Bonus: measurable performance work | [Profiling notes](#profiling-notes) (before and after under load) |
+| Bonus: configurable buffer size and update throttle | `components/SettingsPanel.tsx`, `config.ts`, `store/liveStore.ts` (`clampSettings`) |
+| Bonus: exponential backoff with a visible indicator | `lib/backoff.ts`, `services/streamClient.ts`, `components/ConnectionBar.tsx` |
 
 ## Project structure
 
