@@ -24,6 +24,7 @@ type UnknownRecord = Readonly<Record<string, unknown>>;
 
 // C0/C1 controls plus zero width and bidi override characters, which can spoof how text reads on screen.
 // Built from a string because line separator escapes inside a regex literal trip up some parsers.
+// eslint-disable-next-line no-control-regex
 const UNSAFE_CHARS = new RegExp('[\\u0000-\\u001F\\u007F-\\u009F\\u200B-\\u200F\\u2028-\\u202E\\u2060-\\u206F\\uFEFF]', 'g');
 
 const fail = (reason: InvalidReason): ParseResult => ({ ok: false, reason });
