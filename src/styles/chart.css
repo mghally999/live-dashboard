@@ -1,0 +1,25 @@
+.chart {
+  position: relative;
+  min-height: 280px;
+}
+
+.chart__canvas {
+  width: 100%;
+}
+
+.chart__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+}
+
+.chart .u-legend {
+  display: none;
+}
+
+.chart .u-axis {
+  color: var(--text-muted);
+}
