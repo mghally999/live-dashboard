@@ -30,6 +30,22 @@ describe('ConnectionBar', () => {
     expect(status).toHaveTextContent('Retrying in 3s');
   });
 
+  it('starts the countdown from the current time even after a long live period', () => {
+    const { store } = renderWithStore(<ConnectionBar onRetry={vi.fn()} />);
+    act(() => {
+      store.setConnection({ status: 'live', attempt: 0, maxAttempts: 8, retryAt: null });
+      store.flushNow();
+    });
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+    act(() => {
+      store.setConnection({ status: 'reconnecting', attempt: 1, maxAttempts: 8, retryAt: Date.now() + 4_000 });
+      store.flushNow();
+    });
+    expect(screen.getByRole('status')).toHaveTextContent('Retrying in 4s');
+  });
+
   it('offers a retry button in the error state', async () => {
     vi.useRealTimers();
     const onRetry = vi.fn();

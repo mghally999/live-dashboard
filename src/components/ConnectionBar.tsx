@@ -45,17 +45,26 @@ function describe(state: ConnectionState, remainingMs: number | null): string {
   }
 }
 
+interface StatusTextProps {
+  readonly state: ConnectionState;
+}
+
+/** Keyed by retryAt by the parent, so each new retry starts its countdown from a fresh clock reading. */
+function StatusText({ state }: StatusTextProps) {
+  const remainingMs = useCountdown(state.status === 'reconnecting' ? state.retryAt : null);
+  return <span>{describe(state, remainingMs)}</span>;
+}
+
 export const ConnectionBar = memo(function ConnectionBar({ onRetry }: ConnectionBarProps) {
   const connection = useLiveSelector(selectConnection);
   const counters = useLiveSelector(selectCounters);
   const pause = useLiveSelector(selectPause);
-  const remainingMs = useCountdown(connection.status === 'reconnecting' ? connection.retryAt : null);
 
   return (
     <div className={`connection connection--${connection.status}`}>
       <div className="connection__status" role="status" aria-live="polite">
         <span className="connection__dot" aria-hidden="true" />
-        <span>{describe(connection, remainingMs)}</span>
+        <StatusText key={connection.retryAt ?? 'idle'} state={connection} />
       </div>
       {connection.status === 'error' ? (
         <button type="button" className="button button--small button--primary" onClick={onRetry}>
