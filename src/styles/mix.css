@@ -1,0 +1,85 @@
+.mix {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.mix__head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.mix__total {
+  color: var(--text-faint);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.mix__bar {
+  display: flex;
+  gap: 2px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+}
+
+.mix__seg {
+  flex-basis: 0;
+  min-width: 3px;
+  border-radius: var(--radius-pill);
+}
+
+.mix__seg--info,
+.mix__item--info {
+  --sev: var(--info);
+}
+
+.mix__seg--warning,
+.mix__item--warning {
+  --sev: var(--warning);
+}
+
+.mix__seg--critical,
+.mix__item--critical {
+  --sev: var(--critical);
+}
+
+.mix__seg {
+  background: var(--sev);
+}
+
+.mix__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.mix__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mix__item strong {
+  color: var(--text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.mix__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--sev);
+}
