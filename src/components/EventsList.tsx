@@ -15,7 +15,7 @@ const selectNow = (s: LiveSnapshot) => s.now;
 const selectFilters = (s: LiveSnapshot) => s.filters;
 const selectConnecting = (s: LiveSnapshot) => s.connection.status === 'connecting' && s.totals.total === 0;
 
-// Lets the first rows render before the viewport has been measured (and in tests, where layout is zero).
+// Lets the first rows render before the viewport has been measured.
 const INITIAL_RECT = { width: 800, height: 420 };
 
 export const EventsList = memo(function EventsList() {
