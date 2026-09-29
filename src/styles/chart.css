@@ -1,10 +1,12 @@
+/* The canvas host is absolutely positioned so its size comes from the layout, never from the plot itself. */
 .chart {
   position: relative;
-  min-height: 280px;
+  height: 280px;
 }
 
 .chart__canvas {
-  width: 100%;
+  position: absolute;
+  inset: 0;
 }
 
 .chart__overlay {
@@ -19,4 +21,12 @@
 
 .chart .u-legend {
   display: none;
+}
+
+@media (min-width: 1100px) {
+  .chart {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+  }
 }

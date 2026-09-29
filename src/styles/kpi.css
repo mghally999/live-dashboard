@@ -1,8 +1,7 @@
 .kpis {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-flow: dense;
-  gap: var(--space-4);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-3);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -12,9 +11,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 2px;
   min-width: 0;
-  padding: var(--space-5);
+  padding: 10px 14px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -24,18 +23,24 @@
 .kpi__top {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  min-width: 0;
 }
 
 .kpi__icon {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 22px;
+  height: 22px;
   flex: none;
-  border-radius: var(--radius-md);
+  border-radius: 6px;
   background: var(--tone-soft, var(--surface-2));
   color: var(--tone, var(--text-muted));
+}
+
+.kpi__icon .icon {
+  width: 13px;
+  height: 13px;
 }
 
 .kpi--accent {
@@ -55,57 +60,43 @@
 
 .kpi__label {
   color: var(--text-faint);
-  font-size: var(--text-2xs);
+  font-size: 0.625rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
 }
 
 .kpi__value {
-  margin-top: var(--space-2);
-  font-size: var(--text-xl);
+  margin-top: 2px;
+  font-size: 1.75rem;
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .kpi__hint {
   color: var(--text-faint);
   font-size: var(--text-xs);
+  white-space: nowrap;
 }
 
-/* Gradient border via a padding box and border box background pair, no extra layers or animation. */
+/* Same size as its siblings; the gradient border alone marks it as the headline metric. */
 .kpi--hero {
-  grid-column: span 2;
-  grid-row: span 2;
-  justify-content: space-between;
-  padding: var(--space-6);
   border: 1px solid transparent;
   background:
     linear-gradient(var(--surface), var(--surface)) padding-box,
-    linear-gradient(135deg, rgba(59, 108, 255, 0.7), rgba(59, 108, 255, 0.08) 45%, var(--border) 100%) border-box;
-}
-
-.kpi--hero .kpi__value {
-  margin-top: auto;
-  font-size: var(--text-hero);
-  letter-spacing: -0.04em;
-}
-
-.kpi--hero .kpi__hint {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
+    linear-gradient(135deg, rgba(59, 108, 255, 0.75), rgba(59, 108, 255, 0.1) 55%, var(--border) 100%) border-box;
 }
 
 .kpi__live {
-  position: relative;
-  width: 8px;
-  height: 8px;
-  margin-left: auto;
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--status-live);
 }
@@ -119,40 +110,21 @@
   animation: ping 1.8s var(--ease) infinite;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1099px) {
   .kpis {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .kpi--hero {
-    grid-row: span 1;
-  }
-
-  .kpi--hero .kpi__value {
-    margin-top: var(--space-4);
-  }
-
-  .kpi:last-child {
-    grid-column: span 2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 640px) {
+  .kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 400px) {
   .kpis {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .kpi--hero,
-  .kpi:last-child {
-    grid-column: auto;
-  }
-
-  .kpi--hero {
-    padding: var(--space-5);
-  }
-
-  .kpi--hero .kpi__value {
-    font-size: var(--text-2xl);
   }
 }
 

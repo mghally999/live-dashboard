@@ -83,7 +83,7 @@ export const EventsList = memo(function EventsList() {
         </h2>
         <span className="panel__meta">{formatInteger(rows.length)} shown</span>
       </header>
-      <div role="table" aria-labelledby="events-title" aria-rowcount={rows.length}>
+      <div className="events__table" role="table" aria-labelledby="events-title" aria-rowcount={rows.length}>
         <div className="events__header" role="row">
           <span role="columnheader">Time</span>
           <span role="columnheader">Severity</span>

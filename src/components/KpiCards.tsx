@@ -35,7 +35,7 @@ export const KpiCards = memo(function KpiCards() {
         label="Events per second"
         icon="bolt"
         value={formatDecimal(stats.perSecond)}
-        hint={`${windowLabel} average, ${formatInteger(stats.lastSecond)} in the last second`}
+        hint={`${windowLabel} avg, ${formatInteger(stats.lastSecond)} now`}
         tone="accent"
       />
       <KpiCard label="Total events" icon="layers" value={formatInteger(total)} hint="Since the page opened" />

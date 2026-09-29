@@ -13,6 +13,7 @@ import { EmptyState } from './EmptyState.tsx';
 import { Loading } from './Loading.tsx';
 import '../styles/chart.css';
 
+// Fallback before the container has been laid out.
 const CHART_HEIGHT = 280;
 
 const selectPoints = (s: LiveSnapshot) => s.points;
@@ -43,7 +44,11 @@ const axisTime = new Intl.DateTimeFormat(undefined, {
 // Single row HH:MM:SS labels; the default time axis adds a second date row and crowds ticks at narrow widths.
 const formatTimeTicks = (_u: uPlot, ticks: number[]) => ticks.map((t) => axisTime.format(t * 1000));
 
-function buildOptions(width: number, range: { current: readonly [number, number] }): uPlot.Options {
+function buildOptions(
+  width: number,
+  height: number,
+  range: { current: readonly [number, number] },
+): uPlot.Options {
   const grid = { stroke: cssVar('--chart-grid'), width: 1 };
   const font = '11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
   const axis = { stroke: cssVar('--text-faint'), grid, ticks: { show: false }, font };
@@ -62,7 +67,7 @@ function buildOptions(width: number, range: { current: readonly [number, number]
 
   return {
     width,
-    height: CHART_HEIGHT,
+    height,
     legend: { show: false },
     cursor: { drag: { x: false, y: false }, points: { show: false } },
     hooks: { ready: [buildGradient], setSize: [buildGradient] },
@@ -117,13 +122,22 @@ export const LiveChart = memo(function LiveChart() {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return undefined;
-    const plot = new uPlot(buildOptions(container.clientWidth || 600, rangeRef), [[], []], container);
+    const plot = new uPlot(
+      buildOptions(container.clientWidth || 600, container.clientHeight || CHART_HEIGHT, rangeRef),
+      [[], []],
+      container,
+    );
     plotRef.current = plot;
     if (modelRef.current) plot.setData(modelRef.current.data);
 
     const observer = new ResizeObserver((entries) => {
-      const width = Math.floor(entries[0]?.contentRect.width ?? 0);
-      if (width > 0 && width !== plot.width) plot.setSize({ width, height: CHART_HEIGHT });
+      const rect = entries[0]?.contentRect;
+      const width = Math.floor(rect?.width ?? 0);
+      const height = Math.floor(rect?.height ?? 0);
+      // The container is sized by the layout, so the plot follows both dimensions.
+      if (width > 0 && height > 0 && (width !== plot.width || height !== plot.height)) {
+        plot.setSize({ width, height });
+      }
     });
     observer.observe(container);
 

@@ -23,35 +23,36 @@ export function App() {
 
   return (
     <LiveStoreContext value={store}>
-      <div className="shell">
-        <aside className="rail" aria-label="Stream controls">
-          <Brand />
+      <div className="app">
+        <header className="topbar">
+          <div className="hero">
+            <Brand />
+            <h1 className="hero__title">
+              Service health <span className="hero__accent">in real time</span>
+            </h1>
+            <p className="hero__subtitle">Latency, throughput and incidents across every service, as they happen.</p>
+          </div>
           <ErrorBoundary label="connection status">
             <ConnectionBar onRetry={retry} />
           </ErrorBoundary>
+        </header>
+
+        <div className="toolbar">
           <ErrorBoundary label="controls">
             <Controls onPause={pause} onResume={resume} />
           </ErrorBoundary>
           <ErrorBoundary label="settings">
             <SettingsPanel />
           </ErrorBoundary>
-        </aside>
+        </div>
 
         <main className="main">
-          <header className="hero">
-            <h1 className="hero__title">
-              Service health <span className="hero__accent">in real time</span>
-            </h1>
-            <p className="hero__subtitle">Latency, throughput and incidents across every service, as they happen.</p>
-          </header>
-
           <ErrorBoundary label="key metrics">
             <KpiCards />
           </ErrorBoundary>
           <ErrorBoundary label="severity mix">
             <SeverityMix />
           </ErrorBoundary>
-
           <div className="panels">
             <ErrorBoundary label="chart">
               <LiveChart />

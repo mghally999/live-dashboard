@@ -1,8 +1,10 @@
 .mix {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -10,8 +12,9 @@
 
 .mix__head {
   display: flex;
-  justify-content: space-between;
-  gap: var(--space-3);
+  align-items: baseline;
+  gap: var(--space-2);
+  white-space: nowrap;
 }
 
 .mix__total {
@@ -22,6 +25,7 @@
 
 .mix__bar {
   display: flex;
+  flex: 1 1 200px;
   gap: 2px;
   height: 6px;
   overflow: hidden;
@@ -33,6 +37,7 @@
   flex-basis: 0;
   min-width: 3px;
   border-radius: var(--radius-pill);
+  background: var(--sev);
 }
 
 .mix__seg--info,
@@ -50,19 +55,15 @@
   --sev: var(--critical);
 }
 
-.mix__seg {
-  background: var(--sev);
-}
-
 .mix__legend {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
+  gap: var(--space-4);
   margin: 0;
   padding: 0;
   list-style: none;
   color: var(--text-muted);
   font-size: var(--text-xs);
+  white-space: nowrap;
 }
 
 .mix__item {

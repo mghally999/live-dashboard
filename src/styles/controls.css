@@ -1,16 +1,15 @@
 .controls {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.controls__pause {
-  width: 100%;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  min-width: 0;
 }
 
 .controls__group {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: var(--space-2);
   min-width: 0;
   margin: 0;
@@ -19,13 +18,23 @@
 }
 
 .controls__group > .micro-label {
+  float: left;
   padding: 0;
+  white-space: nowrap;
+}
+
+.controls__group:last-child {
+  flex: 1 1 200px;
+}
+
+.controls__group:last-child .input-wrap {
+  flex: 1;
 }
 
 .controls__toggles {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-1);
+  grid-template-columns: repeat(3, auto);
+  gap: 2px;
   padding: 3px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -37,8 +46,8 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 32px;
-  padding: 0 var(--space-2);
+  min-height: 28px;
+  padding: 0 var(--space-3);
   border: 0;
   border-radius: 7px;
   background: transparent;
@@ -88,7 +97,7 @@
 .input,
 .select {
   width: 100%;
-  min-height: 40px;
+  min-height: 36px;
   padding: 0 var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -120,24 +129,38 @@
 }
 
 .settings {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
+  position: relative;
+  flex: none;
 }
 
 .settings__summary {
-  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   color: var(--text-muted);
   font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
 }
 
+/* A popover, so opening settings never changes the height of the one screen layout. */
 .settings__body {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  padding: 0 var(--space-4) var(--space-4);
+  width: 300px;
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.45);
 }
 
 .settings__field {
@@ -163,11 +186,4 @@
 .settings__field input[type='range'] {
   width: 100%;
   accent-color: var(--accent);
-}
-
-@media (max-width: 1024px) and (min-width: 641px) {
-  .controls {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
