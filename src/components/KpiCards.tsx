@@ -33,33 +33,29 @@ export const KpiCards = memo(function KpiCards() {
         hero
         live={status === 'live'}
         label="Events per second"
-        icon="bolt"
         value={formatDecimal(stats.perSecond)}
         hint={`${windowLabel} avg, ${formatInteger(stats.lastSecond)} now`}
         tone="accent"
       />
-      <KpiCard label="Total events" icon="layers" value={formatInteger(total)} hint="Since the page opened" />
+      <KpiCard label="Total events" value={formatInteger(total)} hint="Since the page opened" />
       <KpiCard
         label="Critical"
-        icon="alert"
         value={formatInteger(stats.bySeverity.critical)}
         hint={windowLabel}
         tone="critical"
       />
       <KpiCard
         label="Warnings"
-        icon="warning"
         value={formatInteger(stats.bySeverity.warning)}
         hint={windowLabel}
         tone="warning"
       />
       <KpiCard
         label="Avg latency"
-        icon="clock"
         value={stats.avgMetric === null ? '-' : `${formatDecimal(stats.avgMetric)} ms`}
         hint={windowLabel}
       />
-      <KpiCard label="Status" icon="signal" value={STATUS_LABELS[status]} hint="Stream connection" />
+      <KpiCard label="Status" value={STATUS_LABELS[status]} hint="Stream connection" />
     </ul>
   );
 });

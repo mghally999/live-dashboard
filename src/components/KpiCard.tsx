@@ -1,12 +1,10 @@
 import { memo } from 'react';
-import { Icon, type IconName } from './Icon.tsx';
 
 export type KpiTone = 'default' | 'accent' | 'warning' | 'critical';
 
 interface KpiCardProps {
   readonly label: string;
   readonly value: string;
-  readonly icon: IconName;
   readonly hint?: string;
   readonly tone?: KpiTone;
   readonly hero?: boolean;
@@ -17,7 +15,6 @@ interface KpiCardProps {
 export const KpiCard = memo(function KpiCard({
   label,
   value,
-  icon,
   hint,
   tone = 'default',
   hero = false,
@@ -26,9 +23,6 @@ export const KpiCard = memo(function KpiCard({
   return (
     <li className={`kpi kpi--${tone}${hero ? ' kpi--hero' : ''}`}>
       <div className="kpi__top">
-        <span className="kpi__icon">
-          <Icon name={icon} />
-        </span>
         <span className="kpi__label">{label}</span>
         {live ? <span className="kpi__live" aria-hidden="true" /> : null}
       </div>

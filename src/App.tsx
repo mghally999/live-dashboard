@@ -8,6 +8,7 @@ import { KpiCards } from './components/KpiCards.tsx';
 import { LiveChart } from './components/LiveChart.tsx';
 import { SettingsPanel } from './components/SettingsPanel.tsx';
 import { SeverityMix } from './components/SeverityMix.tsx';
+import { STREAM_URL } from './config.ts';
 import { LiveStoreContext } from './hooks/useLiveSelector.ts';
 import { useLiveStream } from './hooks/useLiveStream.ts';
 import { LiveStore } from './store/liveStore.ts';
@@ -25,12 +26,9 @@ export function App() {
     <LiveStoreContext value={store}>
       <div className="app">
         <header className="topbar">
-          <div className="hero">
+          <div className="topbar__brand">
             <Brand />
-            <h1 className="hero__title">
-              Service health <span className="hero__accent">in real time</span>
-            </h1>
-            <p className="hero__subtitle">Latency, throughput and incidents across every service, as they happen.</p>
+            <span className="source-tag">{STREAM_URL ? 'WebSocket' : 'Simulated stream'}</span>
           </div>
           <ErrorBoundary label="connection status">
             <ConnectionBar onRetry={retry} />
