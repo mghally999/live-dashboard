@@ -13,7 +13,7 @@ interface EventRowProps {
 export const EventRow = memo(function EventRow({ event, offset }: EventRowProps) {
   return (
     <div
-      className="event-row"
+      className={`event-row event-row--${event.severity}`}
       role="row"
       style={{ height: ROW_HEIGHT, transform: `translateY(${offset}px)` }}
     >
@@ -21,7 +21,10 @@ export const EventRow = memo(function EventRow({ event, offset }: EventRowProps)
         {formatTime(event.ts)}
       </span>
       <span role="cell">
-        <span className={`badge badge--${event.severity}`}>{event.severity}</span>
+        <span className={`sev sev--${event.severity}`}>
+          <span className="sev__dot" aria-hidden="true" />
+          {event.severity}
+        </span>
       </span>
       <span className="event-row__source" role="cell" title={event.source}>
         {event.source}

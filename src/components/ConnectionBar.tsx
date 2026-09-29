@@ -62,15 +62,17 @@ export const ConnectionBar = memo(function ConnectionBar({ onRetry }: Connection
 
   return (
     <div className={`connection connection--${connection.status}`}>
-      <div className="connection__status" role="status" aria-live="polite">
-        <span className="connection__dot" aria-hidden="true" />
-        <StatusText key={connection.retryAt ?? 'idle'} state={connection} />
+      <div className="connection__head">
+        <div className="connection__status" role="status" aria-live="polite">
+          <span className="connection__dot" aria-hidden="true" />
+          <StatusText key={connection.retryAt ?? 'idle'} state={connection} />
+        </div>
+        {connection.status === 'error' ? (
+          <button type="button" className="button button--small button--primary" onClick={onRetry}>
+            Retry
+          </button>
+        ) : null}
       </div>
-      {connection.status === 'error' ? (
-        <button type="button" className="button button--small button--primary" onClick={onRetry}>
-          Retry
-        </button>
-      ) : null}
       {pause.paused ? (
         <span className="connection__paused">
           {formatInteger(pause.newWhilePaused)} new events while paused

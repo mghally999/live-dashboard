@@ -1,15 +1,139 @@
 .kpis {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-3);
+  grid-auto-flow: dense;
+  gap: var(--space-4);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-@media (max-width: 1024px) {
+.kpi {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.kpi__top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.kpi__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: var(--radius-md);
+  background: var(--tone-soft, var(--surface-2));
+  color: var(--tone, var(--text-muted));
+}
+
+.kpi--accent {
+  --tone: var(--accent);
+  --tone-soft: var(--accent-soft);
+}
+
+.kpi--warning {
+  --tone: var(--warning);
+  --tone-soft: var(--warning-soft);
+}
+
+.kpi--critical {
+  --tone: var(--critical);
+  --tone-soft: var(--critical-soft);
+}
+
+.kpi__label {
+  color: var(--text-faint);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.kpi__value {
+  margin-top: var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kpi__hint {
+  color: var(--text-faint);
+  font-size: var(--text-xs);
+}
+
+/* Gradient border via a padding box and border box background pair, no extra layers or animation. */
+.kpi--hero {
+  grid-column: span 2;
+  grid-row: span 2;
+  justify-content: space-between;
+  padding: var(--space-6);
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(135deg, rgba(59, 108, 255, 0.7), rgba(59, 108, 255, 0.08) 45%, var(--border) 100%) border-box;
+}
+
+.kpi--hero .kpi__value {
+  margin-top: auto;
+  font-size: var(--text-hero);
+  letter-spacing: -0.04em;
+}
+
+.kpi--hero .kpi__hint {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.kpi__live {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--status-live);
+}
+
+.kpi__live::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--status-live);
+  animation: ping 1.8s var(--ease) infinite;
+}
+
+@media (max-width: 1280px) {
   .kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpi--hero {
+    grid-row: span 1;
+  }
+
+  .kpi--hero .kpi__value {
+    margin-top: var(--space-4);
+  }
+
+  .kpi:last-child {
+    grid-column: span 2;
   }
 }
 
@@ -17,48 +141,29 @@
   .kpis {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .kpi--hero,
+  .kpi:last-child {
+    grid-column: auto;
+  }
+
+  .kpi--hero {
+    padding: var(--space-5);
+  }
+
+  .kpi--hero .kpi__value {
+    font-size: var(--text-2xl);
+  }
 }
 
-.kpi {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--kpi-accent, var(--border));
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow);
-}
-
-.kpi--warning {
-  --kpi-accent: var(--warning);
-}
-
-.kpi--critical {
-  --kpi-accent: var(--critical);
-}
-
-.kpi--accent {
-  --kpi-accent: var(--accent);
-}
-
-.kpi__label {
-  color: var(--text-muted);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.kpi__value {
-  font-size: var(--text-xl);
-  font-weight: 700;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-}
-
-.kpi__hint {
-  color: var(--text-muted);
-  font-size: var(--text-xs);
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  80%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
 }

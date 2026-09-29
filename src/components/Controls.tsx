@@ -1,9 +1,10 @@
-import { memo, useCallback, useEffect, useState, type ChangeEvent, type CSSProperties } from 'react';
+import { memo, useCallback, useEffect, useState, type ChangeEvent } from 'react';
 import { SEARCH_DEBOUNCE_MS, TIME_WINDOWS } from '../config.ts';
 import { useDebouncedValue } from '../hooks/useDebouncedValue.ts';
 import { useLiveSelector, useLiveStore } from '../hooks/useLiveSelector.ts';
 import type { LiveSnapshot } from '../store/liveStore.ts';
 import { SEVERITIES, type Severity } from '../types/event.ts';
+import { Icon } from './Icon.tsx';
 import '../styles/controls.css';
 
 interface ControlsProps {
@@ -60,25 +61,26 @@ export const Controls = memo(function Controls({ onPause, onResume }: ControlsPr
     <div className="controls">
       <button
         type="button"
-        className={`button ${paused ? 'button--primary' : ''}`}
+        className={`button controls__pause ${paused ? 'button--primary' : ''}`}
         aria-pressed={paused}
         onClick={paused ? onResume : onPause}
       >
+        <Icon name={paused ? 'play' : 'pause'} />
         {paused ? 'Resume' : 'Pause'}
       </button>
 
       <fieldset className="controls__group">
-        <legend className="controls__label">Severity</legend>
+        <legend className="micro-label">Severity</legend>
         <div className="controls__toggles">
           {SEVERITIES.map((severity) => (
             <button
               key={severity}
               type="button"
-              className="toggle"
+              className={`toggle toggle--${severity}`}
               aria-pressed={filters.severities.includes(severity)}
-              style={{ '--sev': `var(--${severity})`, '--sev-bg': `var(--${severity}-bg)` } as CSSProperties}
               onClick={() => { toggleSeverity(severity); }}
             >
+              <span className="toggle__dot" aria-hidden="true" />
               {SEVERITY_LABELS[severity]}
             </button>
           ))}
@@ -86,7 +88,7 @@ export const Controls = memo(function Controls({ onPause, onResume }: ControlsPr
       </fieldset>
 
       <label className="controls__group">
-        <span className="controls__label">Time window</span>
+        <span className="micro-label">Time window</span>
         <select className="select" value={filters.windowMs} onChange={handleWindow}>
           {TIME_WINDOWS.map((w) => (
             <option key={w.ms} value={w.ms}>
@@ -96,18 +98,21 @@ export const Controls = memo(function Controls({ onPause, onResume }: ControlsPr
         </select>
       </label>
 
-      <label className="controls__group controls__search">
-        <span className="controls__label">Search</span>
-        <input
-          className="input"
-          type="search"
-          placeholder="Filter by source or message"
-          value={query}
-          maxLength={MAX_QUERY_LENGTH}
-          onChange={handleQuery}
-          autoComplete="off"
-          spellCheck={false}
-        />
+      <label className="controls__group">
+        <span className="micro-label">Search</span>
+        <span className="input-wrap">
+          <Icon name="search" className="icon input-wrap__icon" />
+          <input
+            className="input"
+            type="search"
+            placeholder="Source or message"
+            value={query}
+            maxLength={MAX_QUERY_LENGTH}
+            onChange={handleQuery}
+            autoComplete="off"
+            spellCheck={false}
+          />
+        </span>
       </label>
     </div>
   );

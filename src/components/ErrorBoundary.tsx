@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ErrorBoundary as ReactErrorBoundary, type FallbackProps } from 'react-error-boundary';
 import { logger } from '../utils/logger.ts';
+import { Icon } from './Icon.tsx';
 
 interface ErrorBoundaryProps {
   readonly label: string;
@@ -16,6 +17,9 @@ function handleError(): void {
 export function ErrorBoundary({ label, children }: ErrorBoundaryProps) {
   const renderFallback = ({ resetErrorBoundary }: FallbackProps) => (
     <div className="panel state state--error" role="alert">
+      <span className="state__icon">
+        <Icon name="error" />
+      </span>
       <p className="state__title">The {label} could not be displayed.</p>
       <button type="button" className="button button--small" onClick={resetErrorBoundary}>
         Try again

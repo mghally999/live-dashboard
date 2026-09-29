@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Brand } from './components/Brand.tsx';
 import { ConnectionBar } from './components/ConnectionBar.tsx';
 import { Controls } from './components/Controls.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
@@ -6,6 +7,7 @@ import { EventsList } from './components/EventsList.tsx';
 import { KpiCards } from './components/KpiCards.tsx';
 import { LiveChart } from './components/LiveChart.tsx';
 import { SettingsPanel } from './components/SettingsPanel.tsx';
+import { SeverityMix } from './components/SeverityMix.tsx';
 import { LiveStoreContext } from './hooks/useLiveSelector.ts';
 import { useLiveStream } from './hooks/useLiveStream.ts';
 import { LiveStore } from './store/liveStore.ts';
@@ -21,36 +23,43 @@ export function App() {
 
   return (
     <LiveStoreContext value={store}>
-      <div className="app">
-        <header className="app__header">
-          <div>
-            <h1 className="app__title">Live Monitoring</h1>
-            <p className="app__subtitle">Service latency and events in real time</p>
-          </div>
+      <div className="shell">
+        <aside className="rail" aria-label="Stream controls">
+          <Brand />
           <ErrorBoundary label="connection status">
             <ConnectionBar onRetry={retry} />
           </ErrorBoundary>
-        </header>
+          <ErrorBoundary label="controls">
+            <Controls onPause={pause} onResume={resume} />
+          </ErrorBoundary>
+          <ErrorBoundary label="settings">
+            <SettingsPanel />
+          </ErrorBoundary>
+        </aside>
 
-        <ErrorBoundary label="controls">
-          <Controls onPause={pause} onResume={resume} />
-        </ErrorBoundary>
-        <ErrorBoundary label="settings">
-          <SettingsPanel />
-        </ErrorBoundary>
+        <main className="main">
+          <header className="hero">
+            <h1 className="hero__title">
+              Service health <span className="hero__accent">in real time</span>
+            </h1>
+            <p className="hero__subtitle">Latency, throughput and incidents across every service, as they happen.</p>
+          </header>
 
-        <main className="dashboard">
-          <div className="dashboard__kpis">
-            <ErrorBoundary label="key metrics">
-              <KpiCards />
+          <ErrorBoundary label="key metrics">
+            <KpiCards />
+          </ErrorBoundary>
+          <ErrorBoundary label="severity mix">
+            <SeverityMix />
+          </ErrorBoundary>
+
+          <div className="panels">
+            <ErrorBoundary label="chart">
+              <LiveChart />
+            </ErrorBoundary>
+            <ErrorBoundary label="events list">
+              <EventsList />
             </ErrorBoundary>
           </div>
-          <ErrorBoundary label="chart">
-            <LiveChart />
-          </ErrorBoundary>
-          <ErrorBoundary label="events list">
-            <EventsList />
-          </ErrorBoundary>
         </main>
       </div>
     </LiveStoreContext>
