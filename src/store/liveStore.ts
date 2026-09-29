@@ -272,7 +272,17 @@ export class LiveStore {
   }
 
   private readonly handleVisibility = (): void => {
-    if (!this.isHidden() && this.dirty) this.flushNow();
+    if (!this.isHidden()) {
+      if (this.dirty) this.flushNow();
+      return;
+    }
+    // A frame requested just before the tab was hidden will not fire until it is visible again, and while it is
+    // pending no timer is scheduled, so the queue would stop draining. Fall back to the timer instead.
+    if (this.frame !== null) {
+      this.cancelFrame(this.frame);
+      this.frame = null;
+      if (this.dirty) this.scheduleFlush();
+    }
   };
 
   /** Moves pending events into the bounded buffers. Bounded by PENDING_QUEUE_LIMIT per call. */

@@ -132,6 +132,28 @@ describe('LiveStore', () => {
     expect(store.getSnapshot().events.at(-1)?.id).toBe(`e${seq}`);
   });
 
+  it('keeps draining when the tab is hidden while a frame is pending', () => {
+    let hidden = false;
+    // Browsers do not run animation frames in hidden tabs, so this frame never fires.
+    const store = new LiveStore({ requestFrame: () => 1, cancelFrame: () => {}, isHidden: () => hidden });
+    const stop = store.start();
+    store.ingest(makeEvent());
+    vi.advanceTimersByTime(300);
+
+    hidden = true;
+    document.dispatchEvent(new Event('visibilitychange'));
+    for (let s = 0; s < 60; s += 1) {
+      for (let i = 0; i < 50; i += 1) store.ingest(makeEvent());
+      vi.advanceTimersByTime(1_000);
+    }
+
+    hidden = false;
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(store.getSnapshot().counters.dropped).toBe(0);
+    expect(store.getSnapshot().totals.total).toBe(3_001);
+    stop();
+  });
+
   it('cleans up timers when stopped', () => {
     const store = createStore();
     const stop = store.start();
